@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="CSS/style.css" />
+    <!-- AlpineJS -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+
+    <!-- App -->
+
+    <!--<script src="src/app.js"></script>-->
+    <title>Coffeeshop VSCode</title>
+  </head>
+  <body>
+    <!-- Navbar start -->
+    <nav class="navbar">
+      <a href="#" class="navbar-logo" style="text-decoration: none"
+        >Warkop<span>Deka</span>.</a
+      >
+
+      <div class="navbar-nav">
+        <a href="/index.html" style="text-decoration: none">Home</a>
+        <a href="/about_us.html" style="text-decoration: none">About Us</a>
+        <a href="/menu.html" style="text-decoration: none">Menu</a>
+
+        <a href="#contact" style="text-decoration: none">Contact</a>
+      </div>
+
+      <div class="navbar-extra">
+        <a href="#" id="search-button" style="text-decoration: none"
+          ><i data-feather="search">search</i></a
+        >
+        <a href="#" id="shopping-cart-button" style="text-decoration: none"
+          ><i data-feather="shopping-cart">shopping-cart</i>
+          <span class="quantity-badge" x-text="$store.cart.quantity"></span>
+        </a>
+        <a href="#" id="hamburger-menu" style="text-decoration: none"
+          ><i data-feather="menu">menu</i></a
+        >
+      </div>
+
+      <!-- Search form start -->
+      <div class="search-form">
+        <input type="search" id="search-box" placeholder="search here...." />
+        <label for="search-box"><i data-feather="search"></i></label>
+      </div>
+
+      <!-- Search form End -->
+
+      <!-- Shopping cart start -->
+
+      <div class="shopping-cart">
+        <template x-for="(item, index) in $store.cart.items" x-keys="index">
+          <div class="cart-item">
+            <img :src="`menu/${item.img}`" :alt="item.name" />
+            <div class="item-detail">
+              <h3 x-text="item.name"></h3>
+              <div class="item-price">
+                <span x-text="rupiah(item.price)"></span> &times;
+                <button id="remove" @click="$store.cart.remove(item.id)">
+                  &minus;
+                </button>
+                <span x-text="item.quantity"></span>
+                <button id="add" @click="$store.cart.add(item)">&plus;</button>
+                &equals;
+                <span x-text="rupiah(item.total)"></span>
+              </div>
+            </div>
+          </div>
+        </template>
+        <h4 x-show="!$store.cart.items.length" style="margin-top: 1rem">
+          Cart is empty
+        </h4>
+        <h4 x-show="$store.cart.items.length">
+          Total : <span x-text="rupiah($store.cart.total)"></span>
+        </h4>
+
+        <div class="form-container" x-show="$store.cart.items.length">
+          <form action="" id="checkoutForm">
+            <input
+              type="hidden"
+              name="items"
+              x-model="JSON.stringify($store.cart.items)"
+            />
+            <input type="hidden" name="total" x-model="$store.cart.total" />
+            <h5>Customer Detail</h5>
+
+            <label for="name">
+              <span>Name</span>
+              <input type="text" name="name" id="name" />
+            </label>
+            <label for="email">
+              <span>Email</span>
+              <input type="email" name="email" id="email" />
+            </label>
+            <label for="phone">
+              <span>Phone</span>
+              <input type="number" name="phone" id="phone" autocomplete="off" />
+            </label>
+
+            <button
+              class="checkout-button disabled"
+              type="submit"
+              id="checkout-button"
+            >
+              Checkout
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Shopping cart end -->
+    </nav>
+
+    <!-- Navbar end -->
+
+    <!-- Hero Section Start -->
+    <section class="hero" id="home">
+      <main class="content">
+        <h1>Enjoy the <span>coffee</span></h1>
+        <p>The delicious way to start your day!</p>
+        <a href="/menu.html" class="cta">Buy Now</a>
+      </main>
+    </section>
+
+    <!-- Hero Section end -->
+
+    <!-- Menu Section End -->
+
+    <!-- Contact Section Start -->
+
+    <section id="contact" class="contact">
+      <h2>Contact Us</h2>
+      <div class="row" class="map">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7929.733404235476!2d106.766087!3d-6.411166!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69e9808fb12d81%3A0x18de3c87d0451781!2sGuppyBettaKara!5e0!3m2!1sid!2sid!4v1719112774652!5m2!1sid!2sid"
+          allowfullscreen=""
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          class="map"
+        >
+        </iframe>
+
+        <form action="">
+          <div class="input-group">
+            <i data-feather="user"></i>
+            <input type="text" placeholder="nama" />
+          </div>
+          <div class="input-group">
+            <i data-feather="mail"></i>
+            <input type="text" placeholder="email" />
+          </div>
+          <div class="input-group">
+            <i data-feather="phone"></i>
+            <input type="text" placeholder="no. handphone" />
+          </div>
+          <button type="submit" class="butt">Send Message</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Contact Section End -->
+
+    <!-- Footer start -->
+
+    <footer>
+      <div class="socials">
+        <a href="https://www.instagram.com/warung.kara"
+          ><i data-feather="instagram"></i
+        ></a>
+      </div>
+
+      <div class="links">
+        <a href="/index.html" style="text-decoration: none">Home</a>
+        <a href="/about_us.html" style="text-decoration: none">About Us</a>
+        <a href="/menu.html" style="text-decoration: none">Menu</a>
+        <a href="#contact" style="text-decoration: none">Contact</a>
+      </div>
+
+      <div class="credit">
+        <p>Created By <a href="">WarkopDeka</a>. | &copy; 2024.</p>
+      </div>
+    </footer>
+    <!-- Footer end -->
+
+    <!-- Feather Icons -->
+    <script>
+      feather.replace();
+    </script>
+
+    <!-- My Javascript -->
+    <script src="js/main.js"></script>
+  </body>
+</html>

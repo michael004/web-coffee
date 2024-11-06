@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="CSS/style.css" />
+    <!-- AlpineJS -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+
+    <!-- App -->
+
+    <script src="src/app.js" async></script>
+    <title>Coffeeshop VSCode</title>
+  </head>
+  <body>
+    <!-- Navbar start -->
+    <nav class="navbar" x-data>
+      <a href="#" class="navbar-logo" style="text-decoration: none"
+        >Warkop<span>Deka</span>.</a
+      >
+
+      <div class="navbar-nav">
+        <a href="/index.html" style="text-decoration: none">Home</a>
+        <a href="/about_us.html" style="text-decoration: none">About Us</a>
+        <a href="/menu.html" style="text-decoration: none">Menu</a>
+
+        <a href="#contact" style="text-decoration: none">Contact</a>
+      </div>
+
+      <div class="navbar-extra">
+        <a href="#" id="search-button" style="text-decoration: none"
+          ><i data-feather="search">search</i></a
+        >
+        <a href="#" id="shopping-cart-button" style="text-decoration: none"
+          ><i data-feather="shopping-cart">shopping-cart</i> 
+          <span class="quantity-badge" x-text="$store.cart.quantity"></span>
+        </a>
+        <a href="#" id="hamburger-menu" style="text-decoration: none"
+          ><i data-feather="menu">menu</i></a
+        >
+      </div>
+
+      <!-- Search form start -->
+      <div class="search-form">
+        <input type="search" id="search-box" placeholder="search here...." />
+        <label for="search-box"><i data-feather="search"></i></label>
+      </div>
+
+      <!-- Search form End -->
+
+      <!-- Shopping cart start -->
+
+      <div class="shopping-cart">
+        <template x-for="(item, index) in $store.cart.items" x-keys="index">
+          <div class="cart-item">
+          <img :src="`menu/${item.img}`" :alt="item.name" />
+          <div class="item-detail">
+            <h3 x-text="item.name"></h3>
+            <div class="item-price">
+              <span x-text="rupiah(item.price)"></span> &times;
+              <button id="remove" @click="$store.cart.remove(item.id)">&minus;</button>
+              <span x-text="item.quantity"></span>
+              <button id="add" @click="$store.cart.add(item)">&plus;</button> &equals;
+              <span x-text="rupiah(item.total)"></span>
+            </div>
+          </div>
+
+          </div>
+        </template>
+        <h4 x-show="!$store.cart.items.length" style="margin-top: 1rem;">Cart is empty</h4>
+        <h4 x-show="$store.cart.items.length">Total : <span x-text="rupiah($store.cart.total)"></span></h4>
+
+        <div class="form-container" x-show="$store.cart.items.length">
+          <form action="" id="checkoutForm">
+            <input type="hidden" name="items" x-model="JSON.stringify($store.cart.items)">
+            <input type="hidden" name="total" x-model="$store.cart.total">
+            <h5>Customer Detail</h5>
+
+            <label for="name">
+              <span>Name</span>
+              <input type="text" name="name" id="name">
+            </label>
+            <label for="email">
+              <span>Email</span>
+              <input type="email" name="email" id="email">
+            </label>
+            <label for="phone">
+              <span>Phone</span>
+              <input type="number" name="phone" id="phone" autocomplete="off">
+            </label>
+
+            <button class="checkout-button disabled" type="submit" id="checkout-button">Checkout</button>
+          </form>
+        </div>
+      </div>
+
+
+      <!-- Shopping cart end -->
+    </nav>
+
+    <!-- Navbar end -->
+    <!-- Product Coffee(shopping cart)section start -->
+    <section class="products" id="products" x-data="products">
+      <h2>Our Best Coffee</h2>
+      <p>
+
+      </p>
+      <div class="row">
+        <template x-for="(item, index) in getCoffeeItems()" :x-key="products">
+        <div class="product-cart">
+          <div class="product-icons">
+            <a href="#" @click.prevent="$store.cart.add(item)">
+              <svg
+  width="24"
+  height="24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <use href="menu/feather-sprite.svg#shopping-cart" />
+</svg>
+              
+            </a>
+            <a href="#" class="item-detail-button1" @click.prevent="showDetails(item.id)">
+              <svg
+  width="24"
+  height="24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <use href="menu/feather-sprite.svg#eye" />
+</svg>
+            </a>
+          </div>
+          <div class="product-image">
+            <img :src="`/menu/${item.img}`" :alt="item.name" />
+          </div>
+          <div class="product-content">
+            <h3 x-text="item.name"></h3>
+            <div class="product-stars">
+              <svg
+  width="24"
+  height="24"
+  fill="currentColor"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <use href="menu/feather-sprite.svg#star" />
+</svg>
+              <svg
+  width="24"
+  height="24"
+  fill="currentColor"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <use href="menu/feather-sprite.svg#star" />
+</svg>
+              <svg
+  width="24"
+  height="24"
+  fill="currentColor"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <use href="menu/feather-sprite.svg#star" />
+</svg>
+              <svg
+  width="24"
+  height="24"
+  fill="currentColor"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <use href="menu/feather-sprite.svg#star" />
+</svg>
+              <svg
+  width="24"
+  height="24"
+  fill="currentColor"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <use href="menu/feather-sprite.svg#star" />
+</svg>
+
+
+            </div>
+            <div class="product-price" x-text="rupiah(item.price)"></div>
+          </div>
+        </div>
+      </template>
+      </div>
+      <div class="modal" id="item-detail-modal1" >
+        <div class="modal-container">
+          <a href="#" class="close-icon"><i data-feather="x"></i></a>
+          <div class="modal-content">
+            <img :src="'menu/' + selectedItem.img" :alt="selectedItem.name" />
+            <div class="product-content">
+              <h3 x-text="selectedItem.name"></h3>
+              <p x-text="selectedItem.description"></p>
+              <div class="product-stars">
+                <i data-feather="star" class="fullstar"></i>
+                <i data-feather="star" class="fullstar"></i>
+                <i data-feather="star" class="fullstar"></i>
+                <i data-feather="star"></i>
+                <i data-feather="star"></i>
+                <i data-feather="star"></i>
+              </div>
+              <div class="product-price" x-text="'IDR ' + selectedItem.price"></div>
+              <a href="#"><i data-feather="shopping-cart"></i><span>Add to cart</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product section end -->
+
+    <!-- Snack section start -->
+    <section class="products" id="products" x-data="products">
+      <h2>Snacks</h2>
+      <p>
+
+      </p>
+      <div class="row">
+        <template x-for="(item, index) in getSnackItems()" :x-key="products">
+          <div class="product-cart">
+            <div class="product-icons">
+              <a href="#" @click.prevent="$store.cart.add(item)">
+                <svg
+    width="24"
+    height="24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <use href="menu/feather-sprite.svg#shopping-cart" />
+  </svg>
+                
+              </a>
+              <a href="#" class="item-detail-buttons1">
+                <svg
+    width="24"
+    height="24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <use href="menu/feather-sprite.svg#eye" />
+  </svg>
+              </a>
+            </div>
+            <div class="product-image">
+              <img :src="`/menu/${item.img}`" :alt="item.name" />
+            </div>
+            <div class="product-content">
+              <h3 x-text="item.name"></h3>
+              <div class="product-stars">
+                <svg
+    width="24"
+    height="24"
+    fill="currentColor"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <use href="menu/feather-sprite.svg#star" />
+  </svg>
+                <svg
+    width="24"
+    height="24"
+    fill="currentColor"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <use href="menu/feather-sprite.svg#star" />
+  </svg>
+                <svg
+    width="24"
+    height="24"
+    fill="currentColor"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <use href="menu/feather-sprite.svg#star" />
+  </svg>
+                <svg
+    width="24"
+    height="24"
+    fill="currentColor"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <use href="menu/feather-sprite.svg#star" />
+  </svg>
+                <svg
+    width="24"
+    height="24"
+    fill="currentColor"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <use href="menu/feather-sprite.svg#star" />
+  </svg>
+  
+  
+              </div>
+              <div class="product-price" x-text="rupiah(item.price)"></div>
+            </div>
+          </div>
+        </template>
+        </div>
+      </section>
+    
+    <!-- Snack section end -->
+  </body>
+</html>
+<!-- Footer start -->
+
+<footer>
+    <div class="socials">
+      <a href="https://www.instagram.com/warung.kara"><i data-feather="instagram"></i></a>
+      
+    </div>
+  
+    <div class="links">
+      <a href="/index.html" style="text-decoration: none">Home</a>
+      <a href="/about_us.html" style="text-decoration: none">About Us</a>
+      <a href="/menu.html" style="text-decoration: none">Menu</a>
+      <a href="#contact" style="text-decoration: none">Contact</a>
+    </div>
+  
+    <div class="credit">
+      <p>Created By <a href="">WarkopDeka</a>. | &copy; 2024.</p>
+    </div>
+  </footer>
+  <!-- Footer end -->
+
+  <!-- Modal Box Item Detail start-->
+  <!-- Modal Box Item Detail 1-->
+
+  <div class="modal" id="item-detail-modal1">
+    <div class="modal-container">
+      <a href="#" class="close-icon"><i data-feather="x"></i></a>
+      <div class="modal-content">
+        <img :src="'menu/' + selectedItem.img" :alt="selectedItem.name" />
+        <div class="product-content">
+          <h3 x-text="selectedItem.name"></h3>
+          <p x-text="selectedItem.description"></p>
+          <div class="product-stars">
+            <i data-feather="star" class="fullstar"></i>
+            <i data-feather="star" class="fullstar"></i>
+            <i data-feather="star" class="fullstar"></i>
+            <i data-feather="star"></i>
+            <i data-feather="star"></i>
+            <i data-feather="star"></i>
+          </div>
+          <div class="product-price">IDR 30k</div>
+          <a href="#"
+            ><i data-feather="shopping-cart"></i><span>Add to chart</span></a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Box Item Detail 2-->
+  <div class="modal" id="item-detail-modal2">
+    <div class="modal-container">
+      <a href="#" class="close-icon"><i data-feather="x"></i></a>
+      <div class="modal-content">
+        <img src="menu/KOSUKA.jpeg" alt="Product 2" />
+        <div class="product-content">
+          <h3>Product 2</h3>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis
+            necessitatibus temporibus quod! Velit numquam architecto, iusto
+            fuga qui ipsum hic dicta nemo cumque id esse.
+          </p>
+          <div class="product-stars">
+            <i data-feather="star" class="fullstar"></i>
+            <i data-feather="star" class="fullstar"></i>
+            <i data-feather="star" class="fullstar"></i>
+            <i data-feather="star"></i>
+            <i data-feather="star"></i>
+            <i data-feather="star"></i>
+          </div>
+          <div class="product-price">IDR 30k</div>
+          <a href="#"
+            ><i data-feather="shopping-cart"></i><span>Add to chart</span></a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Modal Box Item Detail 3-->
+    <div class="modal" id="item-detail-modal3">
+      <div class="modal-container">
+        <a href="#" class="close-icon"><i data-feather="x"></i></a>
+        <div class="modal-content">
+          <img src="menu/KOSUKA.jpeg" alt="Product 3" />
+          <div class="product-content">
+            <h3>Product 3</h3>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis
+              necessitatibus temporibus quod! Velit numquam architecto, iusto
+              fuga qui ipsum hic dicta nemo cumque id esse.
+            </p>
+            <div class="product-stars">
+              <i data-feather="star" class="fullstar"></i>
+              <i data-feather="star" class="fullstar"></i>
+              <i data-feather="star" class="fullstar"></i>
+              <i data-feather="star"></i>
+              <i data-feather="star"></i>
+              <i data-feather="star"></i>
+            </div>
+            <div class="product-price">IDR 30k</div>
+            <a href="#"
+              ><i data-feather="shopping-cart"></i><span>Add to chart</span></a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Box Item Detail 4-->
+    <div class="modal" id="item-detail-modal4">
+      <div class="modal-container">
+        <a href="#" class="close-icon"><i data-feather="x"></i></a>
+        <div class="modal-content">
+          <img src="menu/Mocachino-01.jpg" alt="Product 4" />
+          <div class="product-content">
+            <h3>Product 4</h3>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis
+              necessitatibus temporibus quod! Velit numquam architecto, iusto
+              fuga qui ipsum hic dicta nemo cumque id esse.
+            </p>
+            <div class="product-stars">
+              <i data-feather="star" class="fullstar"></i>
+              <i data-feather="star" class="fullstar"></i>
+              <i data-feather="star" class="fullstar"></i>
+              <i data-feather="star"></i>
+              <i data-feather="star"></i>
+              <i data-feather="star"></i>
+            </div>
+            <div class="product-price">IDR 30k</div>
+            <a href="#"
+              ><i data-feather="shopping-cart"></i><span>Add to chart</span></a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Box Item Detail 5-->
+    <div class="modal" id="item-detail-modal5">
+      <div class="modal-container">
+        <a href="#" class="close-icon"><i data-feather="x"></i></a>
+        <div class="modal-content">
+          <img src="menu/smoothie.jpeg" alt="Product 5" />
+          <div class="product-content">
+            <h3>Product 5</h3>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis
+              necessitatibus temporibus quod! Velit numquam architecto, iusto
+              fuga qui ipsum hic dicta nemo cumque id esse.
+            </p>
+            <div class="product-stars">
+              <i data-feather="star" class="fullstar"></i>
+              <i data-feather="star" class="fullstar"></i>
+              <i data-feather="star" class="fullstar"></i>
+              <i data-feather="star"></i>
+              <i data-feather="star"></i>
+              <i data-feather="star"></i>
+            </div>
+            <div class="product-price">IDR 30k</div>
+            <a href="#"
+              ><i data-feather="shopping-cart"></i><span>Add to chart</span></a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Box Item Detail 6-->
+    <div class="modal" id="item-detail-modal6">
+      <div class="modal-container">
+        <a href="#" class="close-icon"><i data-feather="x"></i></a>
+        <div class="modal-content">
+          <img src="menu/Affogato.jpg" alt="Product 6" />
+          <div class="product-content">
+            <h3>Product 6</h3>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis
+              necessitatibus temporibus quod! Velit numquam architecto, iusto
+              fuga qui ipsum hic dicta nemo cumque id esse.
+            </p>
+            <div class="product-stars">
+              <i data-feather="star" class="fullstar"></i>
+              <i data-feather="star" class="fullstar"></i>
+              <i data-feather="star" class="fullstar"></i>
+              <i data-feather="star"></i>
+              <i data-feather="star"></i>
+              <i data-feather="star"></i>
+            </div>
+            <div class="product-price">IDR 30k</div>
+            <a href="#"
+              ><i data-feather="shopping-cart"></i><span>Add to chart</span></a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+  <!-- Modal Box Item Detail end-->
+      <!-- Feather Icons -->
+      <script>
+          feather.replace();
+        </script>
+    
+        <!-- My Javascript -->
+        <script src="js/main.js"></script>
+      </body>
+    </html>
+</html>
